@@ -82,6 +82,26 @@ public class JoystickNode extends AbstractNodeMain
     private ConnectedNode       connectedNode_;
     private int                 messageSequenceNumber_;
 
+    //Key codes of buttons on SHIELD
+    private final int SHIELD_X_BUTTON           = 99;
+    private final int SHIELD_Y_BUTTON           = 100;
+    private final int SHIELD_B_BUTTON           = 97;
+    private final int SHIELD_A_BUTTON           = 96;
+    private final int SHIELD_L1_BUTTON          = 102;
+    private final int SHIELD_R1_BUTTON          = 103;
+    private final int SHIELD_LEFT_STICK_BUTTON  = 106;
+    private final int SHIELD_RIGHT_STICK_BUTTON = 107;
+
+    //Indices into axesValues_ array
+    private final int SHIELD_LEFT_STICK_X_AXIS_INDEX = 0;  //Left = -1.0, Right = 1.0
+    private final int SHIELD_LEFT_STICK_Y_AXIS_INDEX = 1;  //Up = -1.0, Down = 1.0
+    private final int SHIELD_L2_AXIS_INDEX = 2;            //Neutral = 0, Pressed = 1.0
+    private final int SHIELD_RIGHT_STICK_X_AXIS_INDEX = 3; //Left = -1.0, Right = 1.0
+    private final int SHIELD_RIGHT_STICK_Y_AXIS_INDEX = 4; //Up = -1.0, Right = 1.0
+    private final int SHIELD_R2_AXIS_INDEX = 5;            //Neutral = 0, Pressed = 1.0
+    private final int SHIELD_DPAD_X_AXIS_INDEX = 6;        //Left = -1.0, Right = 1.0 -- Note: This seems to be binary, not continuous
+    private final int SHIELD_DPAD_Y_AXIS_INDEX = 7;        //Up = -1.0, Down = 1.0 -- Note: This seems to be binary, not continuous
+
     /**
     * The constructor for this class
     */
@@ -224,15 +244,6 @@ public class JoystickNode extends AbstractNodeMain
         final int NUM_PS3_AXES = 27;
         float[] ps3Axes = new float[NUM_PS3_AXES];
 
-        final int SHIELD_LEFT_STICK_X_AXIS_INDEX = 0;  //Left = -1.0, Right = 1.0
-        final int SHIELD_LEFT_STICK_Y_AXIS_INDEX = 1;  //Up = -1.0, Down = 1.0
-        final int SHIELD_L2_AXIS_INDEX = 2;            //Neutral = 0, Pressed = 1.0
-        final int SHIELD_RIGHT_STICK_X_AXIS_INDEX = 3; //Left = -1.0, Right = 1.0
-        final int SHIELD_RIGHT_STICK_Y_AXIS_INDEX = 4; //Up = -1.0, Right = 1.0
-        final int SHIELD_R2_AXIS_INDEX = 5;            //Neutral = 0, Pressed = 1.0
-        final int SHIELD_DPAD_X_AXIS_INDEX = 6;        //Left = -1.0, Right = 1.0 -- Note: This seems to be binary, not continuous
-        final int SHIELD_DPAD_Y_AXIS_INDEX = 7;        //Up = -1.0, Down = 1.0 -- Note: This seems to be binary, not continuous
-
         ps3Axes[0]  = -axesValues_[SHIELD_LEFT_STICK_X_AXIS_INDEX]; //Left Stick X Axis (1 = left, right = -1)
         ps3Axes[1]  = -axesValues_[SHIELD_LEFT_STICK_Y_AXIS_INDEX]; //Left Stick Y Axis (1 = up, down = -1)
         ps3Axes[2]  = -axesValues_[SHIELD_RIGHT_STICK_X_AXIS_INDEX]; //Right Stick X Axis (1 = left, right = -1)
@@ -240,6 +251,8 @@ public class JoystickNode extends AbstractNodeMain
         ps3Axes[4]  = 0.0f; //? (0)
         ps3Axes[5]  = 0.0f; //? (0)
         ps3Axes[6]  = 0.0f; //? (0)
+
+        //TODO: WHERE IS DPAD_X_AXIS LEFT?? The controller I had was broken
         ps3Axes[7]  = 0.0f; //? (0)
         ps3Axes[8]  = axesValues_[SHIELD_DPAD_Y_AXIS_INDEX] <= -1.0f ? -1.0f : 1.0f; //DPad Up (1.0 neutral, -1.0 depressed)
         ps3Axes[9]  = axesValues_[SHIELD_DPAD_X_AXIS_INDEX] >= 1.0f ? -1.0f : 1.0f; //DPad Right (1.0 neutral, -1.0 depressed)
@@ -247,12 +260,12 @@ public class JoystickNode extends AbstractNodeMain
         ps3Axes[11] = 0.0f; //? (0)
         ps3Axes[12] = -normalize(axesValues_[SHIELD_L2_AXIS_INDEX], 0, 1); //L2 (Far back Left), (1.0 neutral, -1.0 depressed)
         ps3Axes[13] = -normalize(axesValues_[SHIELD_R2_AXIS_INDEX], 0, 1); //R2 (Far back Right), (1.0 neutral, -1.0 depressed)
-        ps3Axes[14] = 1.0f; //L1 (Front back Left), (1.0 neutral, -1.0 depressed)
-        ps3Axes[15] = 1.0f; //R1 (Front back Right), (1.0 neutral, -1.0 depressed)
-        ps3Axes[16] = 1.0f; //Triangle (Up), (1.0 neutral, -1.0 depressed)
-        ps3Axes[17] = 1.0f; //Circle (Right), (1.0 neutral, -1.0 depressed)
-        ps3Axes[18] = 1.0f; //X (Down), (1.0 neutral, -1.0 depressed)
-        ps3Axes[19] = 1.0f; //Square (Left), (1.0 neutral, -1.0 depressed)
+        ps3Axes[14] = keys_.get(SHIELD_L1_BUTTON, 0) == 0 ? 1.0f : -1.0f; //L1 (Front back Left), (1.0 neutral, -1.0 depressed)
+        ps3Axes[15] = keys_.get(SHIELD_R1_BUTTON, 0) == 0 ? 1.0f : -1.0f; //R1 (Front back Right), (1.0 neutral, -1.0 depressed)
+        ps3Axes[16] = keys_.get(SHIELD_Y_BUTTON, 0) == 0 ? 1.0f: -1.0f; //Triangle (Up), (1.0 neutral, -1.0 depressed)
+        ps3Axes[17] = keys_.get(SHIELD_B_BUTTON, 0) == 0 ? 1.0f: -1.0f; //Circle (Right), (1.0 neutral, -1.0 depressed)
+        ps3Axes[18] = keys_.get(SHIELD_A_BUTTON, 0) == 0 ? 1.0f: -1.0f; //X (Down), (1.0 neutral, -1.0 depressed)
+        ps3Axes[19] = keys_.get(SHIELD_X_BUTTON, 0) == 0 ? 1.0f: -1.0f; //Square (Left), (1.0 neutral, -1.0 depressed)
         ps3Axes[20] = 0.0f; //? (0)
         ps3Axes[21] = 0.0f; //? (0)
         ps3Axes[22] = 0.0f; //? (0)
@@ -260,6 +273,7 @@ public class JoystickNode extends AbstractNodeMain
         ps3Axes[24] = 0.0f; //? (0)
         ps3Axes[25] = 0.0f; //Controller Accelerometer/Gyro or something
         ps3Axes[26] = 0.0f; //? (0)
+
 
         return ps3Axes;
     }
@@ -273,26 +287,20 @@ public class JoystickNode extends AbstractNodeMain
     {
         final int NUM_PS3_BUTTONS = 19;
 
-        final int SHIELD_X_BUTTON           = 99;
-        final int SHIELD_Y_BUTTON           = 100;
-        final int SHIELD_B_BUTTON           = 97;
-        final int SHIELD_A_BUTTON           = 96;
-        final int SHIELD_L1_BUTTON          = 102;
-        final int SHIELD_R1_BUTTON          = 103;
-        final int SHIELD_LEFT_STICK_BUTTON  = 106;
-        final int SHIELD_RIGHT_STICK_BUTTON = 107;
 
         int[] ps3Buttons = new int[NUM_PS3_BUTTONS];
         ps3Buttons[0] = 0; //Select Button
         ps3Buttons[1] = keys_.get(SHIELD_LEFT_STICK_BUTTON, 0); //Stick Left
         ps3Buttons[2] = keys_.get(SHIELD_RIGHT_STICK_BUTTON, 0); //Stick Right
         ps3Buttons[3] = 0; //Start
-        ps3Buttons[4] = 0; //Cross Up
-        ps3Buttons[5] = 0; //Cross Rights
-        ps3Buttons[6] = 0; //Cross Down
-        ps3Buttons[7] = 0; //Cross Left
-        ps3Buttons[8] = 0; //Rear Left 2
-        ps3Buttons[9] = 0; //Rear Right 2
+
+        ps3Buttons[4] = axesValues_[SHIELD_DPAD_Y_AXIS_INDEX] <= -1.0f ? 1 : 0; //DPad Up
+        ps3Buttons[5] = axesValues_[SHIELD_DPAD_X_AXIS_INDEX] >= 1.0f ? 1 : 0; //DPad Right
+        ps3Buttons[6] = axesValues_[SHIELD_DPAD_Y_AXIS_INDEX] >= 1.0f ? 1 : 0; //DPad Down
+        ps3Buttons[7] = 0; //DPad Left //TODO: This needs to figured out!
+
+        ps3Buttons[8]  = roundToZeroIfNecessary(axesValues_[SHIELD_L2_AXIS_INDEX]) <= 0.01 ? 0 : 1; //Rear Left 2  (L2) (Far back Left)
+        ps3Buttons[9]  = roundToZeroIfNecessary(axesValues_[SHIELD_R2_AXIS_INDEX]) <= 0.01 ? 0 : 1; //Rear Right 2 (R2) (Far back right)
         ps3Buttons[10] = keys_.get(SHIELD_L1_BUTTON, 0); //Rear Left 1
         ps3Buttons[11] = keys_.get(SHIELD_R1_BUTTON, 0); //Rear Right 1
         ps3Buttons[12] = keys_.get(SHIELD_Y_BUTTON, 0); //Triangle (up)
