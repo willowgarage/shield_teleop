@@ -63,7 +63,7 @@ import android.util.Log;
 
 public class MainActivity extends RosActivity
 {
-    private RosImageView<sensor_msgs.CompressedImage> videoStreamView_;            //The rosjava node + widget which renders the video stream
+    private RosImageView<sensor_msgs.CompressedImage> videoStreamView_;  //The rosjava node + widget which renders the video stream
     private JoystickNode                              joystickHandler_;  //The rosjava node which handles joystick events and publishes sensor_msgs/Joy
 
     /**
@@ -86,7 +86,7 @@ public class MainActivity extends RosActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         videoStreamView_ = (RosImageView<sensor_msgs.CompressedImage>) findViewById(R.id.image);
-        videoStreamView_.setTopicName("/usb_cam/videoStreamView_raw/compressed");
+        videoStreamView_.setTopicName("/usb_cam/image_raw/compressed");
         videoStreamView_.setMessageType(sensor_msgs.CompressedImage._TYPE);
         videoStreamView_.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
@@ -97,7 +97,7 @@ public class MainActivity extends RosActivity
     }
 
     /**
-    * Until we get a joystick event, it is not certain what InputDevice corressponds to the joystick
+    * Until we get a joystick event, it is not certain what InputDevice corresponds to the joystick
     * Though there are methods for introspection, I was in a hurry and this does the job.
     */
     private void initializeJoystickHandlerIfPossibleAndNecessary(InputEvent event)
