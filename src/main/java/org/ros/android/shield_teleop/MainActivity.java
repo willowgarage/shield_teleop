@@ -88,8 +88,8 @@ public class MainActivity extends RosActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        if (getIntent().hasExtra("base_control_topic")) {
-            joystickTopic = getIntent().getStringExtra("base_control_topic");
+        if (getIntent().hasExtra("joystick_topic")) {
+            joystickTopic = getIntent().getStringExtra("joystick_topic");
         } else {
             joystickTopic = "joy";
         }
