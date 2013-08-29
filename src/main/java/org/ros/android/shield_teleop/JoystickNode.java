@@ -74,6 +74,7 @@ import sensor_msgs.Joy;
 public class JoystickNode extends AbstractNodeMain
 {
     private InputDevice         device_;
+    private String              joystickTopic_;
     private Publisher<Joy>      joystickPublisher_;
     private int[]               axes_;
     private float[]             axesValues_;
@@ -105,11 +106,12 @@ public class JoystickNode extends AbstractNodeMain
     /**
     * The constructor for this class
     */
-    public JoystickNode()
+    public JoystickNode(String joystickTopic)
     /*************************************************************************/
     {
         isInitialized_ = false;
         messageSequenceNumber_ = 0;
+        joystickTopic_ = joystickTopic;
     }
 
     /**
@@ -177,7 +179,7 @@ public class JoystickNode extends AbstractNodeMain
         super.onStart(connectedNode);
         connectedNode_ = connectedNode;
         Log.d("JoystickNode", "JoystickNode: Connected to ROS master. Creating publisher object...");
-        joystickPublisher_ = connectedNode.newPublisher("/joy", sensor_msgs.Joy._TYPE);
+        joystickPublisher_ = connectedNode.newPublisher(joystickTopic_, sensor_msgs.Joy._TYPE);
 
         Timer publisherTimer = new Timer();
         publisherTimer.schedule(new TimerTask() { //Note: This is a very interesting feature of Java, anonymous classes! Overriding a method for an object of type TimerTask without having to subclass explicitly!

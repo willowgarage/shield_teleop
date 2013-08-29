@@ -65,6 +65,8 @@ public class MainActivity extends RosActivity
 {
     private RosImageView<sensor_msgs.CompressedImage> videoStreamView_;  //The rosjava node + widget which renders the video stream
     private JoystickNode                              joystickHandler_;  //The rosjava node which handles joystick events and publishes sensor_msgs/Joy
+    private String joystickTopic;
+    private String cameraTopic;
 
     /**
     * Constructor for this class
@@ -85,14 +87,27 @@ public class MainActivity extends RosActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        if (getIntent().hasExtra("base_control_topic")) {
+            joystickTopic = getIntent().getStringExtra("base_control_topic");
+        } else {
+            joystickTopic = "joy";
+        }
+        Log.i("ShieldTeleop", "Joystick topic: " + joystickTopic);
+
+        if (getIntent().hasExtra("camera_topic")) {
+            cameraTopic = getIntent().getStringExtra("camera_topic");
+        } else {
+            cameraTopic = "camera/rgb/image_color/compressed_throttle";
+        }
+        Log.i("ShieldTeleop", "Camera topic: " + cameraTopic);
+
         videoStreamView_ = (RosImageView<sensor_msgs.CompressedImage>) findViewById(R.id.image);
-        videoStreamView_.setTopicName("/usb_cam/image_raw/compressed");
+        videoStreamView_.setTopicName(cameraTopic);
         videoStreamView_.setMessageType(sensor_msgs.CompressedImage._TYPE);
         videoStreamView_.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
-        //twistPublisher_ = new TwistPublisher();
-
-        joystickHandler_ = new JoystickNode();
+        joystickHandler_ = new JoystickNode(joystickTopic);
 
     }
 
