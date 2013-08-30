@@ -299,7 +299,7 @@ public class JoystickNode extends AbstractNodeMain
         ps3Buttons[4] = axesValues_[SHIELD_DPAD_Y_AXIS_INDEX] <= -1.0f ? 1 : 0; //DPad Up
         ps3Buttons[5] = axesValues_[SHIELD_DPAD_X_AXIS_INDEX] >= 1.0f ? 1 : 0; //DPad Right
         ps3Buttons[6] = axesValues_[SHIELD_DPAD_Y_AXIS_INDEX] >= 1.0f ? 1 : 0; //DPad Down
-        ps3Buttons[7] = 0; //DPad Left //TODO: This needs to figured out!
+        ps3Buttons[7] = axesValues_[SHIELD_DPAD_X_AXIS_INDEX] <= -1.0f ? 1 : 0; //DPad Left
 
         ps3Buttons[8]  = roundToZeroIfNecessary(axesValues_[SHIELD_L2_AXIS_INDEX]) <= 0.01 ? 0 : 1; //Rear Left 2  (L2) (Far back Left)
         ps3Buttons[9]  = roundToZeroIfNecessary(axesValues_[SHIELD_R2_AXIS_INDEX]) <= 0.01 ? 0 : 1; //Rear Right 2 (R2) (Far back right)
